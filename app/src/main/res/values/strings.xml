@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">AND_p2_PopularMovies_1</string>
+    <string name="main_error_msg">Could not load movies. Please try again.</string>
+</resources>
