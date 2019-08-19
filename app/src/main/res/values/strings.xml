@@ -9,4 +9,7 @@
     <string name="sort_by_popularity">Sort by popularity</string>
     <string name="sort_by_rating">Sort by rating</string>
 
+<!-- Used in list_item.xml   -->
+    <string name="image_content_description">poster image</string>
+
 </resources>

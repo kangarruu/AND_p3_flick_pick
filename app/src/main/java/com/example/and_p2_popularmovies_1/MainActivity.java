@@ -10,15 +10,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
-    private ProgressBar loadingPb;
-    private RecyclerView moviesRv;
-    private TextView errorTv;
+    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private ProgressBar mLoadingPb;
+    private RecyclerView mMoviesRv;
+    private TextView mErrorTv;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mErrorTv = (TextView) findViewById(R.id.main_error_msg_tv);
+        mMoviesRv = (RecyclerView) findViewById(R.id.main_rv);
+        mLoadingPb = (ProgressBar) findViewById(R.id.main_pb);
 
 
     }
