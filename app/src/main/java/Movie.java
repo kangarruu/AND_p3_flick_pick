@@ -1,16 +1,17 @@
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.net.URL;
 
 public class Movie implements Parcelable {
-    String title;                       //original title
-    URL posterImage;                    // movie poster image thumbnail
-    String overview;                    //A plot synopsis (called overview in the api)
-    double rating;                      //user rating (called vote_average in the api)
-    String releaseDate;                 //release date
+    private String title;                       //original title
+    private String posterImage;                 // movie poster image thumbnail
+    private String overview;                    //A plot synopsis (called overview in the api)
+    private double rating;                      //user rating (called vote_average in the api)
+    private String releaseDate;                 //release date
 
-    public Movie(String title, URL image, String overview, double rating, String date){
+    public Movie(String title, String image, String overview, double rating, String date){
         this.title = title;
         this.posterImage = image;
         this.overview = overview;
@@ -19,9 +20,33 @@ public class Movie implements Parcelable {
     }
 
     protected Movie(Parcel in) {
+        title = in.readString();
+        posterImage = in.readString();
+        overview = in.readString();
+        rating = in.readDouble();
+        releaseDate = in.readString();
 
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getPosterImage() {
+        return posterImage;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public double getRating() {
+        return rating;
+    }
+
+    public String getReleaseDate() {
+        return releaseDate;
+    }
 
     @Override
     public int describeContents() {
