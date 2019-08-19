@@ -1,4 +1,12 @@
 <resources>
+
     <string name="app_name">AND_p2_PopularMovies_1</string>
+
+    <!-- Used in ActivityMain  -->
     <string name="main_error_msg">Could not load movies. Please try again.</string>
+
+    <!--  Used in main.xml menu  -->
+    <string name="sort_by_popularity">Sort by popularity</string>
+    <string name="sort_by_rating">Sort by rating</string>
+
 </resources>
