@@ -1,19 +1,24 @@
-import android.net.Uri;
+package com.example.and_p2_popularmovies_1;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.net.URL;
-
 public class Movie implements Parcelable {
     private String title;                       //original title
-    private String posterImage;                 // movie poster image thumbnail
+    private String posterPath;                 // movie poster image thumbnail
     private String overview;                    //A plot synopsis (called overview in the api)
     private double rating;                      //user rating (called vote_average in the api)
     private String releaseDate;                 //release date
 
-    public Movie(String title, String image, String overview, double rating, String date){
+
+    //Constructor in case other details are missing from TMDB
+    public Movie(String title){
         this.title = title;
-        this.posterImage = image;
+    }
+
+    public Movie(String title, String imagePath, String overview, double rating, String date){
+        this.title = title;
+        this.posterPath = imagePath;
         this.overview = overview;
         this.rating = rating;
         this.releaseDate = date;
@@ -21,7 +26,7 @@ public class Movie implements Parcelable {
 
     protected Movie(Parcel in) {
         title = in.readString();
-        posterImage = in.readString();
+        posterPath = in.readString();
         overview = in.readString();
         rating = in.readDouble();
         releaseDate = in.readString();
@@ -32,8 +37,8 @@ public class Movie implements Parcelable {
         return title;
     }
 
-    public String getPosterImage() {
-        return posterImage;
+    public String getPosterPath() {
+        return posterPath;
     }
 
     public String getOverview() {
@@ -56,7 +61,7 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
-        parcel.writeString(String.valueOf(posterImage));
+        parcel.writeString(posterPath);
         parcel.writeString(overview);
         parcel.writeDouble(rating);
         parcel.writeString(releaseDate);

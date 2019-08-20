@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/list_item_cardView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:layout_margin="@dimen/post_cv_margin"
         android:elevation="@dimen/poster_cv_elevation"
         app:cardCornerRadius="@dimen/poster_cv_corners">
 
         <ImageView
             android:id="@+id/list_item_iv"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/image_content_description" />
+            android:layout_width="185dp"
+            android:layout_height="255dp"
+            android:scaleType="fitXY"
+            android:contentDescription="@string/image_content_description"
+            tools:src="@drawable/placeholder"/>
 
     </androidx.cardview.widget.CardView>
 </FrameLayout>

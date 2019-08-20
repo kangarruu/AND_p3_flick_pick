@@ -5,10 +5,13 @@
     <dimen name="main_error_txtsize">20sp</dimen>
     <dimen name="main_pb_width">42dp</dimen>
     <dimen name="main_pb_height">42dp</dimen>
+    <dimen name="main_rv_margin">16dp</dimen>
 
-<!--  Used in list_item.xml -->
+
+    <!--  Used in list_item.xml -->
     <dimen name="poster_cv_elevation">4dp</dimen>
     <dimen name="poster_cv_corners">5dp</dimen>
+    <dimen name="post_cv_margin">8dp</dimen>
 
 
 </resources>
