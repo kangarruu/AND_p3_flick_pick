@@ -15,6 +15,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+        buildTypes.each {
+            it.buildConfigField 'String', 'TMDB_API_KEY', TMDB_ApiKey  //TMDB API key hidden for security
+            it.resValue 'string', 'TMDB_API_KEY_2', TMDB_ApiKey
+        }
     }
 
     repositories {

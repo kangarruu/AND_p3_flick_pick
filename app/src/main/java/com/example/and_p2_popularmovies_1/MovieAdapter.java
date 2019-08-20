@@ -1,7 +1,6 @@
 package com.example.and_p2_popularmovies_1;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.and_p2_popularmovies_1.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -44,14 +44,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder viewHolder, int position) {
         Movie currentMovie = mMovieArrayList.get(position);
-        //get the posterPath from the current com.example.and_p2_popularmovies_1.Movie object
+        //get the posterPath from the current com.example.and_p2_popularmovies_1.Model.Movie object
         String posterPath = currentMovie.getPosterPath();
-        //Generate the URL for the current com.example.and_p2_popularmovies_1.Movie object
+        //Generate the URL for the current com.example.and_p2_popularmovies_1.Model.Movie object
         String posterPathString = BuildMovieURL(posterPath);
         //Include placeholder in case there is no poster path
         Picasso.get()
                 .load(posterPathString)
-                .placeholder(R.drawable.placeholder)
+                .placeholder(R.drawable.placeholder)            //Photo by Brian Kraus on Unsplash
                 .into(viewHolder.mPosterView);
         }
 
@@ -65,7 +65,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
     }
 
-    //MovieAdapterViewHolder locates and stores the necessary views for each com.example.and_p2_popularmovies_1.Movie list item
+    //MovieAdapterViewHolder locates and stores the necessary views for each com.example.and_p2_popularmovies_1.Model.Movie list item
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
         public final ImageView mPosterView;
 

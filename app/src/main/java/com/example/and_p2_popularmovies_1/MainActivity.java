@@ -6,9 +6,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.example.and_p2_popularmovies_1.model.Movie;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         debugList.add(new Movie("Moonlight","/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg","Grace VanderWaal",7.2,"2019-07-19" ));
         debugList.add(new Movie("Sick of Being Told", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2,"2019-07-19" ));
         debugList.add(new Movie("Burned", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-        debugList.add(new Movie("Just a Crush", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
+        debugList.add(new Movie("Just a Crush" ));
         debugList.add(new Movie("So Much More Than This", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
         debugList.add(new Movie("Escape My Mind", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
         debugList.add(new Movie("Talk Good", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
