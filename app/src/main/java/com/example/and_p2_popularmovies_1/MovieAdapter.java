@@ -91,7 +91,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // Helper method for generating a image URL path to pass to Picasso
-    private String BuildMovieURL(String posterPath) {
+    public static String BuildMovieURL(String posterPath) {
         StringBuilder builder = new StringBuilder(BASE_URL);
         builder.append(SIZE)
                 .append(posterPath);

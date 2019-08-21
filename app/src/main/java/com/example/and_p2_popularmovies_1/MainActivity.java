@@ -25,11 +25,18 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterClickHandler {
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    //Static key for intent extra
+    private static final String MOVIE_PARCEL = "parcel_key";
+
     private ProgressBar mLoadingPb;
     private TextView mErrorTv;
     private RecyclerView mMoviesRv;
     private MovieAdapter mMovieAdapter;
     private ArrayList<Movie> movieList;
+
+    //for debugging
+    private URL tempUrl = null;
+
 
     private final static int SPAN_COUNT = 2;
 
@@ -42,38 +49,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         mErrorTv = (TextView) findViewById(R.id.main_error_msg_tv);
         mLoadingPb = (ProgressBar) findViewById(R.id.main_pb);
-
         mMoviesRv = (RecyclerView) findViewById(R.id.main_rv);
 
-//      Debugging mock data. Delete after http call
-//        final ArrayList<Movie> debugList = new ArrayList<>();
-//        debugList.add(new Movie("Moonlight","/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg","Grace VanderWaal",7.2,"2019-07-19" ));
-//        debugList.add(new Movie("Sick of Being Told", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2,"2019-07-19" ));
-//        debugList.add(new Movie("Burned", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("Just a Crush" ));
-//        debugList.add(new Movie("So Much More Than This", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("Escape My Mind", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("Talk Good", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("Florets", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("Insane Sometimes", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("A Better Life", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("City Song", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal",7.2, "2019-07-19" ));
-//        debugList.add(new Movie("Darkness Keeps Chasing Me", "/a4BfxRK8dBgbQqbRxPs8kmLd8LG.jpg", "Grace VanderWaal", 7.2, "2019-07-19"));
-
+        //initialize a MovieAdapter and set it on the RecyclerView
         mMovieAdapter = new MovieAdapter(movieList, this);
         mMoviesRv.setAdapter(mMovieAdapter);
+
         //Create a new GridLayoutManager to display the movie posters
         GridLayoutManager layoutManager = new GridLayoutManager(this, SPAN_COUNT);
         mMoviesRv.setLayoutManager(layoutManager);
         mMoviesRv.hasFixedSize();
 
-        URL tempUrl = null;
         try {
             tempUrl = new URL("https://api.themoviedb.org/3/movie/top_rated?api_key=babc627746a594b8781282dd36606cd8");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
 
+        //Execute an AsyncTask for making http requests
         new TmdbQueryAsyncTask().execute(tempUrl);
     }
 
@@ -98,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public void onListItemClick(Movie clickedMovie) {
         Intent startDetailActivity = new Intent(this, DetailActivity.class);
-        startDetailActivity.putExtra(Intent.EXTRA_PACKAGE_NAME, clickedMovie);
+        startDetailActivity.putExtra(MOVIE_PARCEL, clickedMovie);
         startActivity(startDetailActivity);
     }
 
