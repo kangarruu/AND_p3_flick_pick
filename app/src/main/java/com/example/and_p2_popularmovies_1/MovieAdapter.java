@@ -20,11 +20,13 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     private ArrayList<Movie> mMovieArrayList;
     private static final String BASE_URL = "https://image.tmdb.org/t/p/";
     private static final String SIZE = "w185";
+    private final MovieAdapterClickHandler mClickListener;
 
 
-    //Constructor for creating a com.example.and_p2_popularmovies_1.MovieAdapter
-    public MovieAdapter(ArrayList<Movie> tempList) {
+    //Constructor for creating a MovieAdapter
+    public MovieAdapter(ArrayList<Movie> tempList, MovieAdapterClickHandler clickHandler) {
         mMovieArrayList = tempList;
+        mClickListener = clickHandler;
     }
 
     //Override the onCreateViewHolder to inflate the list item layout
@@ -65,14 +67,26 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         }
     }
 
+    public interface MovieAdapterClickHandler {
+        void onListItemClick(Movie clickedMovie);
+    }
+
     //MovieAdapterViewHolder locates and stores the necessary views for each com.example.and_p2_popularmovies_1.Model.Movie list item
-    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final ImageView mPosterView;
 
         //Constructor for creating MovieAdapterViewHolder
         public MovieAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mPosterView = (ImageView) itemView.findViewById(R.id.list_item_iv);
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            int itemPosition = getAdapterPosition();
+            Movie currentMovie = mMovieArrayList.get(itemPosition);
+            mClickListener.onListItemClick(currentMovie);
         }
     }
 
@@ -87,9 +101,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     //Helper method for updating the adapter with new movie data
     public void refreshMovieData(ArrayList<Movie> movieData){
-        movieData = mMovieArrayList;
+        mMovieArrayList = movieData ;
         notifyDataSetChanged();
     }
-
 
 }
