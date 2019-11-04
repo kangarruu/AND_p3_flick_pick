@@ -10,60 +10,59 @@
         android:id="@+id/title_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.SearchResult.Title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/root_cardView"
-        app:layout_constraintTop_toTopOf="@+id/root_cardView" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/root_cardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:elevation="@dimen/poster_cv_elevation"
         app:cardCornerRadius="@dimen/poster_cv_corners"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/title_tv">
 
         <ImageView
             android:id="@+id/poster_iv"
-            android:layout_width="180dp"
-            android:layout_height="360dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/detail_poster_description"
             android:scaleType="fitXY" />
     </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/overView_tv"
-        android:layout_width="0dp"
+        android:layout_width="347dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="32dp"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/root_cardView"
-        app:layout_constraintTop_toBottomOf="@+id/root_cardView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
         tools:text="Raj is a rich, carefree, happy-go-lucky second generation NRI. Simran is the daughter of Chaudhary Baldev Singh, who in spite of being an NRI is very strict about adherence to Indian values. Simran has left for India to be married to her childhood fiancé. Raj leaves for India with a mission at his hands, to claim his lady love under the noses of her whole family. Thus begins a saga." />
 
     <TextView
         android:id="@+id/release_date_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="@+id/title_tv"
-        app:layout_constraintTop_toTopOf="@+id/rating_tv" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/root_cardView"
+        app:layout_constraintTop_toBottomOf="@+id/root_cardView" />
 
     <TextView
         android:id="@+id/rating_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="@+id/overView_tv"
-        app:layout_constraintStart_toEndOf="@+id/release_date_tv"
-        app:layout_constraintTop_toBottomOf="@+id/title_tv" />
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="@+id/root_cardView"
+        app:layout_constraintTop_toBottomOf="@+id/root_cardView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

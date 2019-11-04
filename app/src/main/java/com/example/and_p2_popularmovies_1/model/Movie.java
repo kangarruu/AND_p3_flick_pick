@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Movie implements Parcelable {
-    private String title;                       //original title
-    private String posterPath;                 // movie poster image thumbnail
+    private String title;                       //title
+    private String posterPath;                  //movie poster image path
     private String overview;                    //A plot synopsis (called overview in the api)
     private double rating;                      //user rating (called vote_average in the api)
     private String releaseDate;                 //release date
@@ -24,7 +24,7 @@ public class Movie implements Parcelable {
         this.releaseDate = date;
     }
 
-    protected Movie(Parcel in) {
+    private Movie(Parcel in) {
         title = in.readString();
         posterPath = in.readString();
         overview = in.readString();

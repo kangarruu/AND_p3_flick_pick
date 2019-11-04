@@ -19,7 +19,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     private ArrayList<Movie> mMovieArrayList;
     private static final String BASE_URL = "https://image.tmdb.org/t/p/";
-    private static final String SIZE = "w185";
+    private static final String SIZE = "w342";
     private final MovieAdapterClickHandler mClickListener;
 
 
@@ -39,8 +39,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View viewToInflate = inflater.inflate(list_item_layout, parent, false);
-        MovieAdapterViewHolder movieAdapterViewHolder = new MovieAdapterViewHolder(viewToInflate);
-        return movieAdapterViewHolder;
+        return new MovieAdapterViewHolder(viewToInflate);
     }
 
     @Override
@@ -49,7 +48,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         //get the posterPath from the current com.example.and_p2_popularmovies_1.Model.Movie object
         String posterPath = currentMovie.getPosterPath();
         //Generate the URL for the current com.example.and_p2_popularmovies_1.Model.Movie object
-        String posterPathString = BuildMovieURL(posterPath);
+        String posterPathString = BuildMovieURL(posterPath, SIZE);
         //Include placeholder in case there is no poster path
         Picasso.get()
                 .load(posterPathString)
@@ -73,10 +72,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     //MovieAdapterViewHolder locates and stores the necessary views for each com.example.and_p2_popularmovies_1.Model.Movie list item
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final ImageView mPosterView;
+        private final ImageView mPosterView;
 
         //Constructor for creating MovieAdapterViewHolder
-        public MovieAdapterViewHolder(@NonNull View itemView) {
+        private MovieAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             mPosterView = (ImageView) itemView.findViewById(R.id.list_item_iv);
             itemView.setOnClickListener(this);
@@ -91,12 +90,11 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     // Helper method for generating a image URL path to pass to Picasso
-    public static String BuildMovieURL(String posterPath) {
+    public static String BuildMovieURL(String posterPath, String size) {
         StringBuilder builder = new StringBuilder(BASE_URL);
-        builder.append(SIZE)
+        builder.append(size)
                 .append(posterPath);
-        String fullImageString = builder.toString();
-        return fullImageString;
+        return builder.toString();
     }
 
     //Helper method for updating the adapter with new movie data

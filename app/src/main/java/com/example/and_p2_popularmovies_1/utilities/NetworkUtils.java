@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -19,15 +20,13 @@ import java.util.Scanner;
 public final class NetworkUtils {
 
     private static final String LOG_TAG = NetworkUtils.class.getSimpleName();
-
-    private static final String QUERY_BASE_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=";
-    private static final String QUERY_BASE_RATING = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
     private static final String API_KEY = BuildConfig.TMDB_API_KEY;
     private static ArrayList<Movie> parsedMovieList;
+    private static URL sortUrl = null;
 
     private static final String RESULTS_KEY = "results";
     private static final String POSTER_PATH_KEY = "poster_path";
-    private static final String TITLE_KEY = "original_title";
+    private static final String TITLE_KEY = "title";
     private static final String VOTE_AVERAGE_KEY = "vote_average";
     private static final String OVERVIEW_KEY = "overview";
     private static final String DATE_KEY = "release_date";
@@ -75,7 +74,6 @@ public final class NetworkUtils {
                 String overview = result.optString(OVERVIEW_KEY);
                 String releaseDate = result.optString(DATE_KEY);
 
-
                 //Create a Movie object and append it to parsedMovieList
                 Movie movie = new Movie(title, posterPath, overview, rating, releaseDate);
                 parsedMovieList.add(movie);
@@ -85,6 +83,14 @@ public final class NetworkUtils {
             Log.e(LOG_TAG, "Issues parsing Movie JSON results", e);
         }
         return parsedMovieList;
+    }
+
+    public static URL buildUrl(String sort){
+        try {
+            sortUrl = new URL(sort + API_KEY);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } return sortUrl;
     }
 
 }

@@ -9,37 +9,35 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.and_p2_popularmovies_1.model.Movie;
 import com.example.and_p2_popularmovies_1.utilities.NetworkUtils;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterClickHandler {
-    public static final String LOG_TAG = MainActivity.class.getSimpleName();
-
-    //Static key for intent extra
-    private static final String MOVIE_PARCEL = "parcel_key";
+    private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
     private ProgressBar mLoadingPb;
     private TextView mErrorTv;
     private RecyclerView mMoviesRv;
-    private MovieAdapter mMovieAdapter;
-    private ArrayList<Movie> movieList;
+    private static MovieAdapter mMovieAdapter;
 
-    //for debugging
-    private URL tempUrl = null;
+    private static ArrayList<Movie> movieList;
 
+    private URL sortUrl = null;
 
     private final static int SPAN_COUNT = 2;
 
+    //Constants for sort option endpoints
+    private static final String QUERY_BASE_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=";
+    private static final String QUERY_BASE_RATING = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
 
 
     @Override
@@ -60,14 +58,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMoviesRv.setLayoutManager(layoutManager);
         mMoviesRv.hasFixedSize();
 
-        try {
-            tempUrl = new URL("https://api.themoviedb.org/3/movie/top_rated?api_key=babc627746a594b8781282dd36606cd8");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+        sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
 
-        //Execute an AsyncTask for making http requests
-        new TmdbQueryAsyncTask().execute(tempUrl);
+        // Execute an AsyncTask for making http requests
+        new TmdbQueryAsyncTask().execute(sortUrl);
     }
 
     @Override
@@ -76,34 +70,59 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id){
+            case R.id.menu_sort_popular: {
+                sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
+                break;
+            }
+            case R.id.menu_sort_rated: {
+                sortUrl = NetworkUtils.buildUrl(QUERY_BASE_RATING);
+                break;
+            }
+        }
+        new TmdbQueryAsyncTask().execute(sortUrl);
+        return super.onOptionsItemSelected(item);
+    }
+
     //helper methods to show/hide the loading indicator and error textView
     private void showErrorMessage() {
         mErrorTv.setVisibility(View.VISIBLE);
         mLoadingPb.setVisibility(View.INVISIBLE);
     }
 
-    private void showLoadingIndicator(){
+    private void showMovieData(){
         mErrorTv.setVisibility(View.INVISIBLE);
-        mLoadingPb.setVisibility(View.VISIBLE);
+        mMoviesRv.setVisibility(View.VISIBLE);
     }
 
     //Launch detail activity upon click
     @Override
     public void onListItemClick(Movie clickedMovie) {
         Intent startDetailActivity = new Intent(this, DetailActivity.class);
-        startDetailActivity.putExtra(MOVIE_PARCEL, clickedMovie);
+        startDetailActivity.putExtra(DetailActivity.MOVIE_PARCEL, clickedMovie);
         startActivity(startDetailActivity);
     }
 
-    public class TmdbQueryAsyncTask extends AsyncTask<URL, Void, String>{
+    private class TmdbQueryAsyncTask extends AsyncTask<URL, Void, String>{
+
+        //Display the loading indicator while loading Movie data
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoadingPb.setVisibility(View.VISIBLE);
+        }
 
         //Run the http request off the main thread
         //@param an Array of urls
         //@return a String with the contents of the http request
         @Override
         protected String doInBackground(URL... urls) {
+
             String queryResults = null;
-            //Dont perform the request if there are no URLs or the first is null
+            //Don't perform the request if there are no URLs or the first is null
             if (urls.length < 1 || urls[0] == null) {
                 return null;
             }
@@ -131,4 +150,5 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             }
         }
     }
+
 }
