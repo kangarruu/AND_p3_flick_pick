@@ -36,8 +36,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private final static int SPAN_COUNT = 2;
 
     //Constants for sort option endpoints
-    private static final String QUERY_BASE_POPULAR = "https://api.themoviedb.org/3/movie/popular?api_key=";
-    private static final String QUERY_BASE_RATING = "https://api.themoviedb.org/3/movie/top_rated?api_key=";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    private static final String QUERY_BASE_POPULAR = BASE_URL + "popular?api_key=";
+    private static final String QUERY_BASE_RATING = BASE_URL + "top_rated?api_key=";
 
 
     @Override
