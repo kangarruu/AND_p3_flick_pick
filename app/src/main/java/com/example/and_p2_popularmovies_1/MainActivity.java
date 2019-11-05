@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ import com.example.and_p2_popularmovies_1.model.Movie;
 import com.example.and_p2_popularmovies_1.utilities.NetworkUtils;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -61,8 +64,20 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
 
+        // Check for internet connection and
         // Execute an AsyncTask for making http requests
-        new TmdbQueryAsyncTask().execute(sortUrl);
+        if (isNetworkConnected()){
+            new TmdbQueryAsyncTask().execute(sortUrl);
+        } else {
+            Log.d(LOG_TAG, "Unable to execute TmdbQueryAsyncTask() due to internet connectivity issues ");
+            showErrorMessage();
+        }
+
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
     @Override
@@ -90,8 +105,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     //helper methods to show/hide the loading indicator and error textView
     private void showErrorMessage() {
-        mErrorTv.setVisibility(View.VISIBLE);
         mLoadingPb.setVisibility(View.INVISIBLE);
+        mMoviesRv.setVisibility(View.INVISIBLE);
+        mErrorTv.setVisibility(View.VISIBLE);
+
     }
 
     private void showMovieData(){
@@ -146,6 +163,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 // @return an ArrayList of Movie objects to update the adapter with
                 movieList = NetworkUtils.parseJsonResponse(s);
                 mMovieAdapter.refreshMovieData(movieList);
+                //Hide the error message
+                showMovieData();
             }else {
                 showErrorMessage();
             }
