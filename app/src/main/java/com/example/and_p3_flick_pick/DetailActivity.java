@@ -1,4 +1,4 @@
-package com.example.and_p2_popularmovies_1;
+package com.example.and_p3_flick_pick;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -8,7 +8,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.and_p2_popularmovies_1.model.Movie;
+import com.example.and_p3_flick_pick.model.Movie;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {

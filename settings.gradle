@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name='AND_p2_PopularMovies_1'
+rootProject.name='AND_p3_flick_pick'

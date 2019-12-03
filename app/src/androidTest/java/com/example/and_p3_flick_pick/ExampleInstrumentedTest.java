@@ -1,4 +1,4 @@
-package com.example.and_p2_popularmovies_1;
+package com.example.and_p3_flick_pick;
 
 import android.content.Context;
 

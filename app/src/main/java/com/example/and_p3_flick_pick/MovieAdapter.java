@@ -1,4 +1,4 @@
-package com.example.and_p2_popularmovies_1;
+package com.example.and_p3_flick_pick;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.and_p2_popularmovies_1.model.Movie;
+import com.example.and_p3_flick_pick.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

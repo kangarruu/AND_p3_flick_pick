@@ -1,9 +1,9 @@
-package com.example.and_p2_popularmovies_1.utilities;
+package com.example.and_p3_flick_pick.utilities;
 
 import android.util.Log;
 
-import com.example.and_p2_popularmovies_1.BuildConfig;
-import com.example.and_p2_popularmovies_1.model.Movie;
+import com.example.and_p3_flick_pick.BuildConfig;
+import com.example.and_p3_flick_pick.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.example.and_p2_popularmovies_1"
+        applicationId "com.example.and_p3_flick_pick"
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1

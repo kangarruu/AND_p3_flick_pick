@@ -1,4 +1,4 @@
-package com.example.and_p2_popularmovies_1;
+package com.example.and_p3_flick_pick;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -16,11 +16,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.and_p2_popularmovies_1.model.Movie;
-import com.example.and_p2_popularmovies_1.utilities.NetworkUtils;
+import com.example.and_p3_flick_pick.model.Movie;
+import com.example.and_p3_flick_pick.utilities.NetworkUtils;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.ArrayList;
 

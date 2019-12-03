@@ -1,4 +1,4 @@
-package com.example.and_p2_popularmovies_1.model;
+package com.example.and_p3_flick_pick.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
