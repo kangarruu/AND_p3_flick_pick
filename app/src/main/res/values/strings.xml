@@ -10,10 +10,10 @@
     <string name="sort_by_rating">Sort by rating</string>
 
     <!-- Used in list_item.xml   -->
-    <string name="main_poster_description">poster image</string>
+    <string name="main_poster_description">Movie poster image</string>
 
     <!-- Used in activity_detail.xml   -->
-    <string name="detail_poster_description">poster image</string>
+    <string name="detail_poster_description">Movie poster image</string>
 
 
 

@@ -45,9 +45,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder viewHolder, int position) {
         Movie currentMovie = mMovieArrayList.get(position);
-        //get the posterPath from the current com.example.and_p2_popularmovies_1.Model.Movie object
+        //get the posterPath from the current Movie object
         String posterPath = currentMovie.getPosterPath();
-        //Generate the URL for the current com.example.and_p2_popularmovies_1.Model.Movie object
+        //Generate the URL for the current Movie object
         String posterPathString = BuildMovieURL(posterPath, SIZE);
         //Include placeholder in case there is no poster path
         Picasso.get()
@@ -70,7 +70,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         void onListItemClick(Movie clickedMovie);
     }
 
-    //MovieAdapterViewHolder locates and stores the necessary views for each com.example.and_p2_popularmovies_1.Model.Movie list item
+    //MovieAdapterViewHolder locates and stores the necessary views for each Movie list item
     public class MovieAdapterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final ImageView mPosterView;
 
