@@ -3,6 +3,7 @@ package com.example.and_p3_flick_pick.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -11,7 +12,7 @@ import androidx.room.PrimaryKey;
 public class Movie implements Parcelable {
 
     @PrimaryKey
-    private int movieId;                       //movie id and primary key for Room
+    private int movieId;                        //movie id and primary key for Room
     private String title;                       //title
     private String posterPath;                  //movie poster image path
     private String backdropPath;                //movie backdrop image path
@@ -85,6 +86,7 @@ public class Movie implements Parcelable {
         parcel.writeInt(movieId);
         parcel.writeString(title);
         parcel.writeString(posterPath);
+        parcel.writeString(backdropPath);
         parcel.writeString(overview);
         parcel.writeDouble(rating);
         parcel.writeString(releaseDate);
@@ -102,6 +104,7 @@ public class Movie implements Parcelable {
         }
     };
 
+    @NonNull
     @Override
     public String toString() {
         return "Movie{" +
