@@ -26,6 +26,7 @@ public final class NetworkUtils {
 
     private static final String RESULTS_KEY = "results";
     private static final String POSTER_PATH_KEY = "poster_path";
+    private static final String BACKDROP_PATH_KEY = "backdrop_path";
     private static final String TITLE_KEY = "title";
     private static final String VOTE_AVERAGE_KEY = "vote_average";
     private static final String OVERVIEW_KEY = "overview";
@@ -70,13 +71,14 @@ public final class NetworkUtils {
                 JSONObject result = resultsArray.getJSONObject(i);
                 String posterPath = result.optString(POSTER_PATH_KEY);
                 int id = result.optInt(ID);
+                String backdropPath = result.optString(BACKDROP_PATH_KEY);
                 String title = result.optString(TITLE_KEY);
                 double rating = result.optDouble(VOTE_AVERAGE_KEY);
                 String overview = result.optString(OVERVIEW_KEY);
                 String releaseDate = result.optString(DATE_KEY);
 
                 //Create a Movie object and append it to parsedMovieList
-                Movie movie = new Movie(id,title, posterPath, overview, rating, releaseDate);
+                Movie movie = new Movie(id,title, posterPath, backdropPath, overview, rating, releaseDate);
                 parsedMovieList.add(movie);
             }
 
