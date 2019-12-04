@@ -11,7 +11,7 @@ import com.example.and_p3_flick_pick.model.Movie;
 
 import java.util.List;
 
-//Dao interface for inserting, displaying or deleting favorited movies from the database
+//Dao interface for reading and writing movies to/from the database
 @Dao
 public interface MovieDao {
 
