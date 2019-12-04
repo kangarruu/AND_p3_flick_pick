@@ -30,7 +30,7 @@ public final class NetworkUtils {
     private static final String VOTE_AVERAGE_KEY = "vote_average";
     private static final String OVERVIEW_KEY = "overview";
     private static final String DATE_KEY = "release_date";
-
+    private static final String ID = "id";
 
 
     //Method for making the HTTP request and returning the response
@@ -69,13 +69,14 @@ public final class NetworkUtils {
             for (int i = 0; i < resultsArray.length(); i++){
                 JSONObject result = resultsArray.getJSONObject(i);
                 String posterPath = result.optString(POSTER_PATH_KEY);
+                int id = result.optInt(ID);
                 String title = result.optString(TITLE_KEY);
                 double rating = result.optDouble(VOTE_AVERAGE_KEY);
                 String overview = result.optString(OVERVIEW_KEY);
                 String releaseDate = result.optString(DATE_KEY);
 
                 //Create a Movie object and append it to parsedMovieList
-                Movie movie = new Movie(title, posterPath, overview, rating, releaseDate);
+                Movie movie = new Movie(id,title, posterPath, overview, rating, releaseDate);
                 parsedMovieList.add(movie);
             }
 

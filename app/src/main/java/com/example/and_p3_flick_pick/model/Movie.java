@@ -3,7 +3,15 @@ package com.example.and_p3_flick_pick.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class Movie implements Parcelable {
+
+    @PrimaryKey
+    private int movieId;                       //movie id and primary key for Room
     private String title;                       //title
     private String posterPath;                  //movie poster image path
     private String overview;                    //A plot synopsis (called overview in the api)
@@ -11,12 +19,15 @@ public class Movie implements Parcelable {
     private String releaseDate;                 //release date
 
 
+
     //Constructor in case other details are missing from TMDB
+    @Ignore
     public Movie(String title){
         this.title = title;
     }
 
-    public Movie(String title, String imagePath, String overview, double rating, String date){
+    public Movie(int id, String title, String imagePath, String overview, double rating, String date){
+        this.movieId = id;
         this.title = title;
         this.posterPath = imagePath;
         this.overview = overview;
