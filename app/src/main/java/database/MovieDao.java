@@ -18,7 +18,10 @@ public interface MovieDao {
     @Query("SELECT * FROM Movies")
     List<Movie> loadAllMovies();
 
-    @Insert
+    @Query("SELECT * FROM Movies WHERE movieId = :movieId")
+    Movie loadMovieById(int movieId);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertMovie(Movie movie);
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

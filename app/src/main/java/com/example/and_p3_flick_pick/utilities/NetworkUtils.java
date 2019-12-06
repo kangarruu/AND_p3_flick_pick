@@ -78,7 +78,7 @@ public final class NetworkUtils {
                 String releaseDate = result.optString(DATE_KEY);
 
                 //Create a Movie object and append it to parsedMovieList
-                Movie movie = new Movie(id,title, posterPath, backdropPath, overview, rating, releaseDate);
+                Movie movie = new Movie(id,title, posterPath, backdropPath, overview, rating, releaseDate, false);
                 parsedMovieList.add(movie);
             }
 

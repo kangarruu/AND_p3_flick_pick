@@ -26,6 +26,8 @@ public abstract class MovieDatabase extends RoomDatabase {
                 sInstance = Room.databaseBuilder(context.getApplicationContext(),
                         MovieDatabase.class,
                         MovieDatabase.DATABASE_NAME)
+                        //FOR TESTING PURPOSES ONLY: REMOVE MAIN THREAD QUERY PERMISSION AFTER DEBUG
+                        .allowMainThreadQueries()
                         .build();
             }
         }

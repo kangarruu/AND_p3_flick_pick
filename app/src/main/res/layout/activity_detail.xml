@@ -8,7 +8,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <TextView
             android:id="@+id/title_tv"
@@ -38,16 +38,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/detail_poster_description"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                tools:srcCompat="@drawable/placeholder" />
         </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/overView_tv"
-            android:layout_width="347dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="32dp"
             android:layout_marginEnd="32dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/release_date_tv"
@@ -65,9 +67,25 @@
             android:id="@+id/rating_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/root_cardView"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/favoritesButton"
+            app:layout_constraintStart_toEndOf="@+id/release_date_tv"
             app:layout_constraintTop_toBottomOf="@+id/root_cardView" />
+
+        <ToggleButton
+            android:id="@+id/favoritesButton"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/fav_button"
+            android:checked="false"
+            android:text=""
+            android:textOff=""
+            android:textOn=""
+            app:layout_constraintBottom_toBottomOf="@+id/rating_tv"
+            app:layout_constraintEnd_toEndOf="@+id/root_cardView"
+            app:layout_constraintTop_toTopOf="@+id/rating_tv" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
