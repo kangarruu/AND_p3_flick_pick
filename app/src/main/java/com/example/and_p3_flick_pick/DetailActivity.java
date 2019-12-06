@@ -68,7 +68,6 @@ public class DetailActivity extends AppCompatActivity {
             ratingTv.setText(String.valueOf(mClickedMovie.getRating()));
             releaseDateTv.setText(mClickedMovie.getReleaseDate().subSequence(0,4));
 
-
             //set the poster image
             String posterPath = mClickedMovie.getPosterPath();
             //Generate the URL for the current Movie object
@@ -83,7 +82,6 @@ public class DetailActivity extends AppCompatActivity {
         }
 
     }
-
 
     @Override
     protected void onResume() {
@@ -104,10 +102,6 @@ public class DetailActivity extends AppCompatActivity {
             Log.e(LOG_TAG, "thisMovie is not in the database" );
         }
 
-
-
-
-
         //Set the change listener on the favorites button
         favoritesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -119,18 +113,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         });
-
     }
-
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        //Save the state of the toggleButton to sharedPreferences
-//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-//        SharedPreferences.Editor editor = sharedPreferences.edit();
-//        editor.putBoolean(FAVORITE_STATE_KEY, favoritesButton.isChecked());
-//        editor.apply();
-//    }
 
     public void addMovieToFavorites() {
         mClickedMovie.setFavorite(true);
