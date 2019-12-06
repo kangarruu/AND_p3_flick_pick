@@ -86,21 +86,34 @@ public class DetailActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //Retrieve favorite status from the database by the Movie's id
-        int currentMovieId = mClickedMovie.getMovieId();
-        try {
-            Movie thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
-            Log.d(LOG_TAG, "Retrieving favorite status. thisMovie.getFavorite() is: "  + thisMovie.getFavorite());
-            if (thisMovie != null){
-                if (thisMovie.getFavorite()) {
-                    favoritesButton.setChecked(true);
-                } else {
-                    favoritesButton.setChecked(false);
+        //get the current Movie's id
+        final int currentMovieId = mClickedMovie.getMovieId();
+
+        //Retrieve its favorite status from the database off the main thread
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final Movie thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
+                    Log.d(LOG_TAG, "Retrieving favorite status. thisMovie.getFavorite() is: "  + thisMovie.getFavorite());
+                    if (thisMovie != null){
+                        //Update the Togglebutton checked status with a new Runnable TEMPORARY - CHANGE THIS WITH LIVEDATA
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (thisMovie.getFavorite()) {
+                                    favoritesButton.setChecked(true);
+                                } else {
+                                    favoritesButton.setChecked(false);
+                                }
+                            }
+                        });
+                        }
+                    } catch (NullPointerException e){
+                    Log.e(LOG_TAG, "thisMovie has not been added to favorites." );
+                    }
                 }
-            }
-        } catch (NullPointerException e){
-            Log.e(LOG_TAG, "thisMovie is not in the database" );
-        }
+            });
 
         //Set the change listener on the favorites button
         favoritesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -116,15 +129,30 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void addMovieToFavorites() {
+        //Set this movie object favorite boolean to true and add it to the db
         mClickedMovie.setFavorite(true);
-        mDb.movieDao().insertMovie(mClickedMovie);
-        Log.d(LOG_TAG, "Movie inserted into the db:" + mDb.movieDao().loadAllMovies());
+        //Run db insert operation off the main thread
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.movieDao().insertMovie(mClickedMovie);
+                Log.d(LOG_TAG, "Movie inserted into the db:" + mDb.movieDao().loadAllMovies());
+            }
+        });
+
     }
 
     public void deleteMovieFromFavorites() {
+        //Set this movie object favorite boolean to false and remove it from the db
         mClickedMovie.setFavorite(false);
-        mDb.movieDao().deleteMovie(mClickedMovie);
-        Log.d(LOG_TAG, "Movie deleted from db:" + mDb.movieDao().loadAllMovies());
+        //Run db delete operation off the main thread
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                mDb.movieDao().deleteMovie(mClickedMovie);
+                Log.d(LOG_TAG, "Movie deleted from db:" + mDb.movieDao().loadAllMovies());
+            }
+        });
     }
 
 }
