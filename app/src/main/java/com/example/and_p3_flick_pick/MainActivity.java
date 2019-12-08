@@ -1,6 +1,8 @@
 package com.example.and_p3_flick_pick;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +24,9 @@ import com.example.and_p3_flick_pick.utilities.NetworkUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
+
+import database.MovieDatabase;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterClickHandler {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -32,6 +37,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private static MovieAdapter mMovieAdapter;
 
     private static ArrayList<Movie> movieList;
+
+    //Member variable for the Database;
+    private MovieDatabase mDb;
 
     private URL sortUrl = null;
 
@@ -63,6 +71,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
         sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
 
+        //initialize the db
+        mDb = MovieDatabase.getInstance(getApplicationContext());
+
         // Check for internet connection and
         // Execute an AsyncTask for making http requests
         if (isNetworkConnected()){
@@ -92,15 +103,32 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (id){
             case R.id.menu_sort_popular: {
                 sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
+                new TmdbQueryAsyncTask().execute(sortUrl);
                 break;
             }
             case R.id.menu_sort_rated: {
                 sortUrl = NetworkUtils.buildUrl(QUERY_BASE_RATING);
+                new TmdbQueryAsyncTask().execute(sortUrl);
+                break;
+            }
+            case R.id.menu_display_favorites: {
+                loadFavorites();
                 break;
             }
         }
-        new TmdbQueryAsyncTask().execute(sortUrl);
         return super.onOptionsItemSelected(item);
+    }
+
+    //Load favorites list saved in the db and set an observer to be notified of changes via LiveData
+    private void loadFavorites()  {
+        final LiveData<List<Movie>> favoriteMovies = mDb.movieDao().loadAllMovies();
+        favoriteMovies.observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                Log.d(LOG_TAG, "Receiving updated favorites list from LiveData");
+                mMovieAdapter.refreshMovieData(movies);
+            }
+        });
     }
 
     //helper methods to show/hide the loading indicator and error textView

@@ -13,19 +13,20 @@ import com.example.and_p3_flick_pick.model.Movie;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapterViewHolder> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
-    private ArrayList<Movie> mMovieArrayList;
+    private List<Movie> mMovieList;
     private static final String BASE_URL = "https://image.tmdb.org/t/p/";
     private static final String SIZE = "w342";
     private final MovieAdapterClickHandler mClickListener;
 
 
     //Constructor for creating a MovieAdapter
-    public MovieAdapter(ArrayList<Movie> tempList, MovieAdapterClickHandler clickHandler) {
-        mMovieArrayList = tempList;
+    public MovieAdapter(List<Movie> tempList, MovieAdapterClickHandler clickHandler) {
+        mMovieList = tempList;
         mClickListener = clickHandler;
     }
 
@@ -44,7 +45,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public void onBindViewHolder(@NonNull MovieAdapterViewHolder viewHolder, int position) {
-        Movie currentMovie = mMovieArrayList.get(position);
+        Movie currentMovie = mMovieList.get(position);
         //get the posterPath from the current Movie object
         String posterPath = currentMovie.getPosterPath();
         //Generate the URL for the current Movie object
@@ -59,10 +60,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
 
     @Override
     public int getItemCount() {
-        if (null == mMovieArrayList){
+        if (null == mMovieList){
             return 0;
         }else {
-            return mMovieArrayList.size();
+            return mMovieList.size();
         }
     }
 
@@ -84,7 +85,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
         @Override
         public void onClick(View v) {
             int itemPosition = getAdapterPosition();
-            Movie currentMovie = mMovieArrayList.get(itemPosition);
+            Movie currentMovie = mMovieList.get(itemPosition);
             mClickListener.onListItemClick(currentMovie);
         }
     }
@@ -98,8 +99,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     }
 
     //Helper method for updating the adapter with new movie data
-    public void refreshMovieData(ArrayList<Movie> movieData){
-        mMovieArrayList = movieData ;
+    public void refreshMovieData(List<Movie> movieData){
+        mMovieList = movieData ;
         notifyDataSetChanged();
     }
 

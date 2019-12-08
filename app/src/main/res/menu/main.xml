@@ -6,10 +6,17 @@
         android:title="@string/sort_by_popularity"
         android:orderInCategory="1"
         app:showAsAction="never"/>
+
     <item
         android:id="@+id/menu_sort_rated"
         android:title="@string/sort_by_rating"
         android:orderInCategory="2"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/menu_display_favorites"
+        android:title="@string/display_favorites"
+        android:orderInCategory="3"
         app:showAsAction="never"/>
 
 </menu>

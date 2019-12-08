@@ -8,6 +8,7 @@
     <!--  Used in main.xml menu  -->
     <string name="sort_by_popularity">Sort by popularity</string>
     <string name="sort_by_rating">Sort by rating</string>
+    <string name="display_favorites">Display favorites</string>
 
     <!-- Used in list_item.xml   -->
     <string name="main_poster_description">Movie poster image</string>

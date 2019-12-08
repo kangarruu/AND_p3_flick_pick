@@ -46,12 +46,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-    //get intent and extras from MainActivity
-        Intent getClickedMovieFromMain = getIntent();
-        if (getClickedMovieFromMain.hasExtra(MOVIE_PARCEL)){
-            mClickedMovie = getClickedMovieFromMain.getParcelableExtra(MOVIE_PARCEL);
-        }
-
         //Initialize the database instance
         mDb = MovieDatabase.getInstance(getApplicationContext());
 
@@ -61,6 +55,12 @@ public class DetailActivity extends AppCompatActivity {
         releaseDateTv = (TextView) findViewById(R.id.release_date_tv);
         posterIv = (ImageView) findViewById(R.id.poster_iv);
         favoritesButton = (ToggleButton) findViewById(R.id.favoritesButton);
+
+    //get intent and extras from MainActivity
+        Intent getClickedMovieFromMain = getIntent();
+        if (getClickedMovieFromMain.hasExtra(MOVIE_PARCEL)){
+            mClickedMovie = getClickedMovieFromMain.getParcelableExtra(MOVIE_PARCEL);
+        }
 
         if (mClickedMovie != null){
             titleTv.setText(mClickedMovie.getTitle());
@@ -75,52 +75,56 @@ public class DetailActivity extends AppCompatActivity {
             //Include placeholder in case there is no poster path
             Picasso.get()
                     .load(posterPathString)
-                    .placeholder(R.drawable.placeholder)            //Photo by Brian Kraus on Unsplash
+                    .placeholder(R.drawable.placeholder)          //Photo by Brian Kraus on Unsplash
                     .into(posterIv);
+
+            //get the Movie id from the passed in Movie object
+            final int currentMovieId = mClickedMovie.getMovieId();
+
+            //Retrieve its favorite status from the database off the main thread
+            AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final Movie thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
+                        Log.d(LOG_TAG, "Retrieving favorite status. thisMovie.getFavorite() status is: "  + thisMovie.getFavorite());
+                        if (thisMovie != null){
+                            //if movie is in the db, set the movie member variable favorite to true
+                            // and set the ToggleButton as checked
+                            mClickedMovie.setFavorite(true);
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    favoritesButton.setChecked(true);
+                                }
+                            });
+                        }
+                    } catch (NullPointerException e){
+                        Log.e(LOG_TAG, "thisMovie has not been added to favorites." );
+                    }
+                }
+            });
+
         } else {
             Log.d(LOG_TAG, "mClickedMovie is null");
         }
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //get the current Movie's id
-        final int currentMovieId = mClickedMovie.getMovieId();
-
-        //Retrieve its favorite status from the database off the main thread
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    final Movie thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
-                    Log.d(LOG_TAG, "Retrieving favorite status. thisMovie.getFavorite() is: "  + thisMovie.getFavorite());
-                    if (thisMovie != null){
-                        //Update the Togglebutton checked status with a new Runnable TEMPORARY - CHANGE THIS WITH LIVEDATA
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (thisMovie.getFavorite()) {
-                                    favoritesButton.setChecked(true);
-                                } else {
-                                    favoritesButton.setChecked(false);
-                                }
-                            }
-                        });
-                        }
-                    } catch (NullPointerException e){
-                    Log.e(LOG_TAG, "thisMovie has not been added to favorites." );
-                    }
-                }
-            });
-
         //Set the change listener on the favorites button
         favoritesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //If the ToggleButton is selected and it is not already a favorite, add it to the database
                 if(isChecked) {
-                    addMovieToFavorites();
+                    if (!mClickedMovie.getFavorite()) {
+                        addMovieToFavorites();
+                    } else {
+                        Log.d(LOG_TAG, "Movie already in favorites");
+                    }
+                //If the movie has been unchecked, delete the movie from the database
                 } else {
                     deleteMovieFromFavorites();
                 }
@@ -136,7 +140,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mDb.movieDao().insertMovie(mClickedMovie);
-                Log.d(LOG_TAG, "Movie inserted into the db:" + mDb.movieDao().loadAllMovies());
+                Log.d(LOG_TAG, "Movie inserted into the db");
             }
         });
 
@@ -150,7 +154,7 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void run() {
                 mDb.movieDao().deleteMovie(mClickedMovie);
-                Log.d(LOG_TAG, "Movie deleted from db:" + mDb.movieDao().loadAllMovies());
+                Log.d(LOG_TAG, "Movie deleted from db");
             }
         });
     }
