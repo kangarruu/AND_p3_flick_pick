@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import ViewModels.MainViewModel;
 import database.MovieDatabase;
 
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterClickHandler {
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             @Override
             public void onChanged(List<Movie> movies) {
                 Log.d(LOG_TAG, "Receiving updated favorites list from LiveData in ViewModel");
+                movieList = (ArrayList) movies;
                 mMovieAdapter.refreshMovieData(movies);
             }
         });

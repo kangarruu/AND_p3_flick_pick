@@ -3,6 +3,7 @@ package com.example.and_p3_flick_pick;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.widget.ToggleButton;
 import com.example.and_p3_flick_pick.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import ViewModels.DetailedViewModel;
+import ViewModels.DetailedViewModelFactory;
 import database.MovieDatabase;
 
 public class DetailActivity extends AppCompatActivity {
@@ -82,11 +85,14 @@ public class DetailActivity extends AppCompatActivity {
 
             //Retrieve its favorite status from the database off the main thread
             try {
-                Log.d(LOG_TAG, "Attempting to retrieve movie from the db");
-                final LiveData<Movie> thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
-                thisMovie.observe(this, new Observer<Movie>() {
+                Log.d(LOG_TAG, "Checking favorite status of movie in ViewModel via LiveData");
+                DetailedViewModelFactory viewModelFactory = new DetailedViewModelFactory(mDb, currentMovieId);
+                final DetailedViewModel viewModel =
+                        ViewModelProviders.of(this, viewModelFactory).get(DetailedViewModel.class);
+                viewModel.getMovie().observe(this, new Observer<Movie>() {
                     @Override
                     public void onChanged(Movie movie) {
+                        viewModel.getMovie().removeObserver(this);
                         if (movie != null) {
                             Log.d(LOG_TAG, "Movie is in the database, setting favorites button to checked");
                             //if movie is in the db, set the movie member variable favorite to true
@@ -119,7 +125,7 @@ public class DetailActivity extends AppCompatActivity {
                     if (!mClickedMovie.getFavorite()) {
                         addMovieToFavorites();
                     } else {
-                        Log.d(LOG_TAG, "Movie already in favorites");
+                        Log.d(LOG_TAG, "Movie already in favorites, do not add again");
                     }
                 //If the movie has been unchecked, delete the movie from the database
                 } else {

@@ -1,4 +1,4 @@
-package com.example.and_p3_flick_pick;
+package ViewModels;
 
 import android.app.Application;
 import android.util.Log;
