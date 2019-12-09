@@ -1,5 +1,6 @@
 package com.example.and_p3_flick_pick;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     private ProgressBar mLoadingPb;
     private TextView mErrorTv;
-    private RecyclerView mMoviesRv;
+    private static RecyclerView mMoviesRv;
     private static MovieAdapter mMovieAdapter;
 
     private static ArrayList<Movie> movieList;
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private URL sortUrl = null;
 
     private final static int SPAN_COUNT = 2;
+
+    //constant for restoring sort selection for onInstanceState
+    private static final String INSTANCE_STATE_KEY = "save_state";
 
     //Constants for sort option endpoints
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -69,18 +73,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMoviesRv.setLayoutManager(layoutManager);
         mMoviesRv.hasFixedSize();
 
-        sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
-
         //initialize the db
         mDb = MovieDatabase.getInstance(getApplicationContext());
 
-        // Check for internet connection and
-        // Execute an AsyncTask for making http requests
-        if (isNetworkConnected()){
-            new TmdbQueryAsyncTask().execute(sortUrl);
+        if (savedInstanceState != null) {
+            Log.d(LOG_TAG, "Getting savedInstanceState");
+            movieList= savedInstanceState.getParcelableArrayList(INSTANCE_STATE_KEY);
+            mMovieAdapter.refreshMovieData(movieList);
         } else {
-            Log.d(LOG_TAG, "Unable to execute TmdbQueryAsyncTask() due to internet connectivity issues ");
-            showErrorMessage();
+            Log.d(LOG_TAG, "No instanceState Saved, run API query");
+            sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
+            // Check for internet connection and
+            // Execute an AsyncTask for making http requests
+            if (isNetworkConnected()){
+                new TmdbQueryAsyncTask().execute(sortUrl);
+            } else {
+                Log.d(LOG_TAG, "Unable to execute TmdbQueryAsyncTask() due to internet connectivity issues ");
+                showErrorMessage();
+            }
         }
 
     }
@@ -150,6 +160,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         Intent startDetailActivity = new Intent(this, DetailActivity.class);
         startDetailActivity.putExtra(DetailActivity.MOVIE_PARCEL, clickedMovie);
         startActivity(startDetailActivity);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(INSTANCE_STATE_KEY, movieList);
     }
 
     private class TmdbQueryAsyncTask extends AsyncTask<URL, Void, String>{

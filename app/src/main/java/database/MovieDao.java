@@ -10,7 +10,6 @@ import androidx.room.Update;
 
 import com.example.and_p3_flick_pick.model.Movie;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //Dao interface for reading and writing movies to/from the database
