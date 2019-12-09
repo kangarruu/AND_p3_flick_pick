@@ -1,6 +1,8 @@
 package com.example.and_p3_flick_pick;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import android.content.Context;
 import android.content.Intent;
@@ -56,17 +58,17 @@ public class DetailActivity extends AppCompatActivity {
         posterIv = (ImageView) findViewById(R.id.poster_iv);
         favoritesButton = (ToggleButton) findViewById(R.id.favoritesButton);
 
-    //get intent and extras from MainActivity
+        //get intent and extras from MainActivity
         Intent getClickedMovieFromMain = getIntent();
-        if (getClickedMovieFromMain.hasExtra(MOVIE_PARCEL)){
+        if (getClickedMovieFromMain.hasExtra(MOVIE_PARCEL)) {
             mClickedMovie = getClickedMovieFromMain.getParcelableExtra(MOVIE_PARCEL);
         }
 
-        if (mClickedMovie != null){
+        if (mClickedMovie != null) {
             titleTv.setText(mClickedMovie.getTitle());
             overviewTv.setText(mClickedMovie.getOverview());
             ratingTv.setText(String.valueOf(mClickedMovie.getRating()));
-            releaseDateTv.setText(mClickedMovie.getReleaseDate().subSequence(0,4));
+            releaseDateTv.setText(mClickedMovie.getReleaseDate().subSequence(0, 4));
 
             //set the poster image
             String posterPath = mClickedMovie.getPosterPath();
@@ -82,28 +84,26 @@ public class DetailActivity extends AppCompatActivity {
             final int currentMovieId = mClickedMovie.getMovieId();
 
             //Retrieve its favorite status from the database off the main thread
-            AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        final Movie thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
-                        Log.d(LOG_TAG, "Retrieving favorite status. thisMovie.getFavorite() status is: "  + thisMovie.getFavorite());
-                        if (thisMovie != null){
+            try {
+                Log.d(LOG_TAG, "Attempting to retrieve movie from the db");
+                final LiveData<Movie> thisMovie = mDb.movieDao().loadMovieById(currentMovieId);
+                thisMovie.observe(this, new Observer<Movie>() {
+                    @Override
+                    public void onChanged(Movie movie) {
+                        if (movie != null) {
+                            Log.d(LOG_TAG, "Movie is in the database, setting favorites button to checked");
                             //if movie is in the db, set the movie member variable favorite to true
                             // and set the ToggleButton as checked
                             mClickedMovie.setFavorite(true);
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    favoritesButton.setChecked(true);
-                                }
-                            });
+                            favoritesButton.setChecked(true);
+                        }else{
+                            Log.d(LOG_TAG, "Movie is not in the database, leave favorite button unchecked");
                         }
-                    } catch (NullPointerException e){
-                        Log.e(LOG_TAG, "thisMovie has not been added to favorites." );
                     }
-                }
-            });
+                });
+            } catch (NullPointerException e) {
+                Log.e(LOG_TAG, "thisMovie has not been added to favorites.");
+            }
 
         } else {
             Log.d(LOG_TAG, "mClickedMovie is null");

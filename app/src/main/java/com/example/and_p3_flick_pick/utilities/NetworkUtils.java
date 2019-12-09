@@ -49,11 +49,13 @@ public final class NetworkUtils {
             if (hasInput) {
                 return scanner.next();
             }else {
+                scanner.close();
                 return null;
             }
         }finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
+
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.example.and_p3_flick_pick;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 break;
             }
             case R.id.menu_display_favorites: {
-                loadFavorites();
+                loadFavoritesFromViewModel();
                 break;
             }
         }
@@ -120,12 +120,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     //Load favorites list saved in the db and set an observer to be notified of changes via LiveData
-    private void loadFavorites()  {
-        final LiveData<List<Movie>> favoriteMovies = mDb.movieDao().loadAllMovies();
-        favoriteMovies.observe(this, new Observer<List<Movie>>() {
+    private void loadFavoritesFromViewModel()  {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavorites().observe(this, new Observer<List<Movie>>() {
             @Override
             public void onChanged(List<Movie> movies) {
-                Log.d(LOG_TAG, "Receiving updated favorites list from LiveData");
+                Log.d(LOG_TAG, "Receiving updated favorites list from LiveData in ViewModel");
                 mMovieAdapter.refreshMovieData(movies);
             }
         });
