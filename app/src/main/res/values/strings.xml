@@ -2,6 +2,11 @@
 
     <string name="app_name">Flick Pick</string>
 
+    <!-- Toolbar titles   -->
+    <string name="toolbar_title_popular_movies">Popular Movies</string>
+    <string name="toolbar_title_high_rated_movies">Highly Rated Movies</string>
+    <string name="toolbar_title_my_favorites">My Favorites</string>
+
     <!-- Used in ActivityMain  -->
     <string name="main_error_msg">Unable to load movies. Please try again.</string>
 
@@ -15,6 +20,27 @@
 
     <!-- Used in activity_detail.xml   -->
     <string name="detail_poster_description">Movie poster image</string>
+    <string name="detail_rating_label">Rating</string>
+    <string name="detail_rating_tools">7.9</string>
+    <string name="detail_overview_label">Synopsis</string>
+    <string name="detail_overview_tools">Raj is a rich, carefree, happy-go-lucky second generation NRI. Simran is the daughter of Chaudhary Baldev Singh, who in spite of being an
+        NRI is very strict about adherence to Indian values. Simran has left for India to be married to her childhood fiancé. Raj leaves for India with a mission at his hands, to
+        claim his lady love under the noses of her whole family. Thus begins a saga.</string>
+    <string name="detail_release_year_label">Released</string>
+    <string name="detail_release_year_tools">2001</string>
+    <string name="detail_fav_button_description">Favorites ToggleButton</string>
+
+
+    <!--  Used in detailed_review_layout.xml  -->
+    <string name="review_layout_review_label">Reviews</string>
+    <string name="review_layout_review_text_tools">Leaving Terminator: Dark Fate, I never felt like they managed to save the franchise, nor overwhelmingly glad this movie exists.
+        Its an adequate addition in a messy franchise that never reaches the heights of the first two films but is just above the three films before it, and because of this a lot of
+        people will like it much more than they should. Its not the Halloween or even the X-Men: Days of Future Past of the Terminator franchise; its a fine follow up, and
+        sadly nothing more.</string>
+
+    <!-- Used in detailed_videos_layout.xml  -->
+    <string name="videos_layout_videos_label">Videos</string>
+    <string name="videos_layout_video_link_text_tools">TestLINKTestLINKTestLINKTestLINKTestLINKTestLINK</string>
 
 
 

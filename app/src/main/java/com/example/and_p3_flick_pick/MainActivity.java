@@ -1,6 +1,7 @@
 package com.example.and_p3_flick_pick;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,22 +35,23 @@ import database.MovieDatabase;
 public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterClickHandler {
     private static final String LOG_TAG = MainActivity.class.getSimpleName();
 
+    private ActionBar actionBar;
     private ProgressBar mLoadingPb;
     private TextView mErrorTv;
     private static RecyclerView mMoviesRv;
     private static MovieAdapter mMovieAdapter;
 
     private static ArrayList<Movie> movieList;
-
-    //Member variable for the Database;
-    private MovieDatabase mDb;
+    private static List<Movie> favoritesList;
 
     private URL sortUrl = null;
 
-    private final static int SPAN_COUNT = 2;
+    private final static int SPAN_COUNT_PORT = 2;
+    private final static int SPAN_COUNT_LAND = 4;
 
     //constant for restoring sort selection for onInstanceState
-    private static final String INSTANCE_STATE_KEY = "save_state";
+    private static final String MOVIELIST_INSTANCE_KEY = "save_state";
+    private static final String TOOLBAR_INSTANCE_KEY = "toolbar_state";
 
     //Constants for sort option endpoints
     private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
@@ -61,6 +64,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        actionBar = getSupportActionBar();
+        actionBar.setTitle(R.string.toolbar_title_popular_movies);
+
         mErrorTv = (TextView) findViewById(R.id.main_error_msg_tv);
         mLoadingPb = (ProgressBar) findViewById(R.id.main_pb);
         mMoviesRv = (RecyclerView) findViewById(R.id.main_rv);
@@ -69,17 +75,19 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         mMovieAdapter = new MovieAdapter(movieList, this);
         mMoviesRv.setAdapter(mMovieAdapter);
 
-        //Create a new GridLayoutManager to display the movie posters
-        GridLayoutManager layoutManager = new GridLayoutManager(this, SPAN_COUNT);
-        mMoviesRv.setLayoutManager(layoutManager);
+        //Set a LayoutManager on the RecyclerView and set the number of columns based on orientation
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            mMoviesRv.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT_PORT));
+        } else {
+            mMoviesRv.setLayoutManager(new GridLayoutManager(this, SPAN_COUNT_LAND));
+        }
         mMoviesRv.hasFixedSize();
 
-        //initialize the db
-        mDb = MovieDatabase.getInstance(getApplicationContext());
-
+        //Save the movieList to the savedInstanceState bundle for retrieval
         if (savedInstanceState != null) {
             Log.d(LOG_TAG, "Getting savedInstanceState");
-            movieList= savedInstanceState.getParcelableArrayList(INSTANCE_STATE_KEY);
+            actionBar.setTitle(savedInstanceState.getCharSequence(TOOLBAR_INSTANCE_KEY));
+            movieList= savedInstanceState.getParcelableArrayList(MOVIELIST_INSTANCE_KEY);
             mMovieAdapter.refreshMovieData(movieList);
         } else {
             Log.d(LOG_TAG, "No instanceState Saved, run API query");
@@ -93,6 +101,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
                 showErrorMessage();
             }
         }
+
+        //Set up ViewModel and set an observer on the favorite's list
+        final MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavorites().observe(this, new Observer<List<Movie>>() {
+            @Override
+            public void onChanged(List<Movie> movies) {
+                Log.d(LOG_TAG, "Receiving updated favorites list from LiveData in ViewModel");
+                //assign favoritesList to the updated favorite's list to be set on adapter after settings click
+                favoritesList = movies;
+            }
+        });
 
     }
 
@@ -115,33 +134,31 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             case R.id.menu_sort_popular: {
                 sortUrl = NetworkUtils.buildUrl(QUERY_BASE_POPULAR);
                 new TmdbQueryAsyncTask().execute(sortUrl);
+                actionBar.setTitle(R.string.toolbar_title_popular_movies);
                 break;
             }
             case R.id.menu_sort_rated: {
                 sortUrl = NetworkUtils.buildUrl(QUERY_BASE_RATING);
                 new TmdbQueryAsyncTask().execute(sortUrl);
+                actionBar.setTitle(R.string.toolbar_title_high_rated_movies);
                 break;
             }
             case R.id.menu_display_favorites: {
                 loadFavoritesFromViewModel();
+                actionBar.setTitle(R.string.toolbar_title_my_favorites);
                 break;
             }
         }
         return super.onOptionsItemSelected(item);
     }
 
-    //Load favorites list saved in the db and set an observer to be notified of changes via LiveData
     private void loadFavoritesFromViewModel()  {
-        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getFavorites().observe(this, new Observer<List<Movie>>() {
-            @Override
-            public void onChanged(List<Movie> movies) {
-                Log.d(LOG_TAG, "Receiving updated favorites list from LiveData in ViewModel");
-                movieList = (ArrayList) movies;
-                mMovieAdapter.refreshMovieData(movies);
-            }
-        });
+        //assign the updated favoritesList to movieList for saving in onInstanceState
+        movieList = (ArrayList) favoritesList;
+        //Load updated favorites list saved in the viewModel
+        mMovieAdapter.refreshMovieData(movieList);
     }
+
 
     //helper methods to show/hide the loading indicator and error textView
     private void showErrorMessage() {
@@ -166,8 +183,10 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
+        CharSequence toolbarTitleState = actionBar.getTitle();
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(INSTANCE_STATE_KEY, movieList);
+        outState.putParcelableArrayList(MOVIELIST_INSTANCE_KEY, movieList);
+        outState.putCharSequence(TOOLBAR_INSTANCE_KEY, toolbarTitleState);
     }
 
     private class TmdbQueryAsyncTask extends AsyncTask<URL, Void, String>{

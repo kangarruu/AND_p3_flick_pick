@@ -1,18 +1,21 @@
 package com.example.and_p3_flick_pick;
 
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.LiveData;
+import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.Log;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.example.and_p3_flick_pick.databinding.ActivityDetailBinding;
 import com.example.and_p3_flick_pick.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -23,14 +26,18 @@ import database.MovieDatabase;
 public class DetailActivity extends AppCompatActivity {
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
+    ActivityDetailBinding mBinding;
+
     //Static key for receiving intent extra
     public static final String MOVIE_PARCEL = "parcel_key";
     public static final String FAVORITE_STATE_KEY = "favorite_state";
 
-    private TextView titleTv;
-    private TextView overviewTv;
-    private TextView ratingTv;
-    private TextView releaseDateTv;
+    private ActionBar actionBar;
+
+//    private TextView titleTv;
+//    private TextView overviewTv;
+//    private TextView ratingTv;
+//    private TextView releaseDateTv;
     private ImageView posterIv;
     private ToggleButton favoritesButton;
 
@@ -48,15 +55,20 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        actionBar = getSupportActionBar();
+
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_detail);
+
         //Initialize the database instance
         mDb = MovieDatabase.getInstance(getApplicationContext());
 
-        titleTv = (TextView) findViewById(R.id.title_tv);
-        overviewTv = (TextView) findViewById(R.id.overView_tv);
-        ratingTv = (TextView) findViewById(R.id.rating_tv);
-        releaseDateTv = (TextView) findViewById(R.id.release_date_tv);
+//        titleTv = (TextView) findViewById(R.id.title_tv);
+//        overviewTv = (TextView) findViewById(R.id.overView_tv);
+//        ratingTv = (TextView) findViewById(R.id.rating_tv);
+//        releaseDateTv = (TextView) findViewById(R.id.release_date_tv);
         posterIv = (ImageView) findViewById(R.id.poster_iv);
-        favoritesButton = (ToggleButton) findViewById(R.id.favoritesButton);
+        favoritesButton = (ToggleButton) findViewById(R.id.favorites_button);
+
 
         //get intent and extras from MainActivity
         Intent getClickedMovieFromMain = getIntent();
@@ -65,10 +77,12 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         if (mClickedMovie != null) {
-            titleTv.setText(mClickedMovie.getTitle());
-            overviewTv.setText(mClickedMovie.getOverview());
-            ratingTv.setText(String.valueOf(mClickedMovie.getRating()));
-            releaseDateTv.setText(mClickedMovie.getReleaseDate().subSequence(0, 4));
+            actionBar.setTitle(mClickedMovie.getTitle());
+            mBinding.overViewTv.setText(mClickedMovie.getOverview());
+            mBinding.ratingTv.setText(String.valueOf(mClickedMovie.getRating()));
+            mBinding.releaseDateTv.setText(mClickedMovie.getReleaseDate().subSequence(0, 4));
+            mBinding.reviewLayout.reviewContentsTv.setText(getResources().getString(R.string.review_layout_review_text_tools));
+            mBinding.videoLayout.videoContentsTv.setText("LINK TO VIDEO TRAILER TESTTESTTEST");
 
             //set the poster image
             String posterPath = mClickedMovie.getPosterPath();
@@ -82,8 +96,7 @@ public class DetailActivity extends AppCompatActivity {
 
             //get the Movie id from the passed in Movie object
             final int currentMovieId = mClickedMovie.getMovieId();
-
-            //Retrieve its favorite status from the database off the main thread
+            //Retrieve its favorite status from the database
             try {
                 Log.d(LOG_TAG, "Checking favorite status of movie in ViewModel via LiveData");
                 DetailedViewModelFactory viewModelFactory = new DetailedViewModelFactory(mDb, currentMovieId);
@@ -105,11 +118,11 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 });
             } catch (NullPointerException e) {
-                Log.e(LOG_TAG, "thisMovie has not been added to favorites.");
+                Log.e(LOG_TAG, "NullPointerException when checking clicked movie's id.");
             }
 
         } else {
-            Log.d(LOG_TAG, "mClickedMovie is null");
+            Log.d(LOG_TAG, "Movie object passed in intent is null");
         }
     }
 
@@ -125,7 +138,7 @@ public class DetailActivity extends AppCompatActivity {
                     if (!mClickedMovie.getFavorite()) {
                         addMovieToFavorites();
                     } else {
-                        Log.d(LOG_TAG, "Movie already in favorites, do not add again");
+                        Log.d(LOG_TAG, "Movie already in favorites, no need to insert to database");
                     }
                 //If the movie has been unchecked, delete the movie from the database
                 } else {
