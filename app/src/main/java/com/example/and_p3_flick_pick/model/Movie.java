@@ -6,20 +6,43 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 //Entity annotation for Room
 @Entity(tableName = "Movies")
 public class Movie implements Parcelable {
 
     @PrimaryKey
+    @SerializedName("id")
+    @Expose
     private int movieId;                        //movie id and primary key for Room
+
+    @SerializedName("title")
+    @Expose
     private String title;                       //title
+
+    @SerializedName("poster_path")
+    @Expose
     private String posterPath;                  //movie poster image path
+
+    @SerializedName("backdrop_path")
+    @Expose
     private String backdropPath;                //movie backdrop image path
+
+    @SerializedName("overview")
+    @Expose
     private String overview;                    //A plot synopsis (called overview in the api)
+
+    @SerializedName("vote_average")
+    @Expose
     private double rating;                      //user rating (called vote_average in the api)
+
+    @SerializedName("release_date")
+    @Expose
     private String releaseDate;                 //release date
-    private boolean isFavorite;                 //Has movie been selected as favorite
+
+    private boolean isFavorite = false;         //Has movie been selected as favorite
 
 
     //Constructor in case other details are missing from TMDB

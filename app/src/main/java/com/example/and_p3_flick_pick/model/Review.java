@@ -3,8 +3,11 @@ package com.example.and_p3_flick_pick.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Review implements Parcelable {
 
+    @SerializedName("id")
     private int movieId;                       //movie id
     private String author;                     //author
     private String content;                    //review text

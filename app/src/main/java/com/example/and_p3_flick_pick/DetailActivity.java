@@ -31,6 +31,7 @@ public class DetailActivity extends AppCompatActivity {
     //Static key for receiving intent extra
     public static final String MOVIE_PARCEL = "parcel_key";
     public static final String FAVORITE_STATE_KEY = "favorite_state";
+    private int currentMovieId;
 
     private ActionBar actionBar;
 
@@ -81,8 +82,6 @@ public class DetailActivity extends AppCompatActivity {
             mBinding.overViewTv.setText(mClickedMovie.getOverview());
             mBinding.ratingTv.setText(String.valueOf(mClickedMovie.getRating()));
             mBinding.releaseDateTv.setText(mClickedMovie.getReleaseDate().subSequence(0, 4));
-            mBinding.reviewLayout.reviewContentsTv.setText(getResources().getString(R.string.review_layout_review_text_tools));
-            mBinding.videoLayout.videoContentsTv.setText("LINK TO VIDEO TRAILER TESTTESTTEST");
 
             //set the poster image
             String posterPath = mClickedMovie.getPosterPath();
@@ -95,11 +94,26 @@ public class DetailActivity extends AppCompatActivity {
                     .into(posterIv);
 
             //get the Movie id from the passed in Movie object
-            final int currentMovieId = mClickedMovie.getMovieId();
-            //Retrieve its favorite status from the database
+            currentMovieId = mClickedMovie.getMovieId();
+            //Retrieve its favorite status from the database and set it on the ToggleButton
+            setFavoriteStatus(currentMovieId);
+
+
+
+            mBinding.reviewLayout.reviewContentsTv.setText(getResources().getString(R.string.review_layout_review_text_tools));
+            mBinding.videoLayout.videoContentsTv.setText("LINK TO VIDEO TRAILER TESTTESTTEST");
+
+
+        } else {
+            Log.d(LOG_TAG, "Movie object passed in intent is null");
+        }
+    }
+
+    private void setFavoriteStatus(int id) {
+            final int movieId = id;
             try {
                 Log.d(LOG_TAG, "Checking favorite status of movie in ViewModel via LiveData");
-                DetailedViewModelFactory viewModelFactory = new DetailedViewModelFactory(mDb, currentMovieId);
+                DetailedViewModelFactory viewModelFactory = new DetailedViewModelFactory(mDb, movieId);
                 final DetailedViewModel viewModel =
                         ViewModelProviders.of(this, viewModelFactory).get(DetailedViewModel.class);
                 viewModel.getMovie().observe(this, new Observer<Movie>() {
@@ -120,11 +134,7 @@ public class DetailActivity extends AppCompatActivity {
             } catch (NullPointerException e) {
                 Log.e(LOG_TAG, "NullPointerException when checking clicked movie's id.");
             }
-
-        } else {
-            Log.d(LOG_TAG, "Movie object passed in intent is null");
-        }
-    }
+    };
 
     @Override
     protected void onResume() {
