@@ -1,6 +1,6 @@
 package com.example.and_p3_flick_pick.model;
 
-import java.util.List;
+import java.util.ArrayList;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -20,7 +20,7 @@ public class MovieWrapper {
 
     @SerializedName("results")
     @Expose
-    private List<Movie> movies = null;
+    private ArrayList<Movie> movies = null;
 
 
     //getters
@@ -36,7 +36,7 @@ public class MovieWrapper {
         return totalPages;
     }
 
-    public List<Movie> getMovies() {
+    public ArrayList<Movie> getMovies() {
         return movies;
     }
 
