@@ -35,7 +35,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieAdapter
     @Override
     public MovieAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
-        int list_item_layout = R.layout.list_item;
+        int list_item_layout = R.layout.movie_list_item;
         LayoutInflater inflater = LayoutInflater.from(context);
 
         View viewToInflate = inflater.inflate(list_item_layout, parent, false);

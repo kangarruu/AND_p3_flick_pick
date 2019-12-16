@@ -8,10 +8,14 @@
     <dimen name="main_rv_margin">16dp</dimen>
 
 
-    <!--  Used in list_item.xml -->
+    <!--  Used in movie_list_itemt_item.xml -->
     <dimen name="poster_cv_elevation">4dp</dimen>
     <dimen name="poster_cv_corners">5dp</dimen>
     <dimen name="post_cv_margin">8dp</dimen>
 
+    <!-- Used in detailed_image_layout.xmlxml   -->
+    <dimen name="collapsing_tlbr_margin_start">8dp</dimen>
+    <dimen name="collapsing_image_margin_top">8dp</dimen>
+    <dimen name="collapsing_scrim_height">160dp</dimen>
 
 </resources>

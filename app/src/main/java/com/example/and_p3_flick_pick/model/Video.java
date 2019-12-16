@@ -4,17 +4,24 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.google.gson.annotations.Expose;
 
 public class Video implements Parcelable {
 
-    @SerializedName("id")
-    private int movieId;                        //movie id
+    @SerializedName("key")
+    @Expose
     private String key;                         //video key for youtube
+
+    @SerializedName("name")
+    @Expose
     private String name;                        //title of video
+
+    @SerializedName("type")
+    @Expose
     private String type;                        //type of video
 
-    public Video(int movieId, String key, String name, String type) {
-        this.movieId = movieId;
+
+    public Video(String key, String name, String type) {
         this.key = key;
         this.name = name;
         this.type = type;
@@ -22,17 +29,12 @@ public class Video implements Parcelable {
     }
 
     protected Video(Parcel in) {
-        movieId = in.readInt();
         key = in.readString();
         name = in.readString();
         type = in.readString();
     }
 
     //Getters
-    public int getMovieId() {
-        return movieId;
-    }
-
     public String getKey() {
         return key;
     }
@@ -67,7 +69,6 @@ public class Video implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(movieId);
         dest.writeString(key);
         dest.writeString(name);
         dest.writeString(type);
@@ -78,7 +79,6 @@ public class Video implements Parcelable {
     @Override
     public String toString() {
         return "Video{" +
-                "movieId=" + movieId +
                 ", key='" + key + '\'' +
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +

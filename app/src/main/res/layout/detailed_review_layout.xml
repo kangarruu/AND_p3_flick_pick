@@ -3,28 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/review_label_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
             android:text="@string/review_layout_review_label"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/review_contents_tv"
-            android:layout_width="wrap_content"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/review_rv"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-            app:layout_constraintStart_toStartOf="@+id/review_label_tv"
-            app:layout_constraintTop_toBottomOf="@+id/review_label_tv"
-            tools:text="@string/review_layout_review_text_tools" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:nestedScrollingEnabled="true"/>
+
+    </LinearLayout>
 
 </layout>

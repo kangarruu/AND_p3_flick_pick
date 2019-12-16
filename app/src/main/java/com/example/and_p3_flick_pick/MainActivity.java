@@ -43,20 +43,24 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private static RecyclerView mMoviesRv;
     private static MovieAdapter mMovieAdapter;
 
-    private TmdbRetrofitApi tmdbRetrofitApi;
-
-    private static ArrayList<Movie> movieList;
-    private static List<Movie> favoritesList;
-
+    //Constants for defining number of columns in the layoutManager
     private final static int SPAN_COUNT_PORT = 2;
     private final static int SPAN_COUNT_LAND = 4;
 
-    //constant for restoring sort selection for onInstanceState
+    //member variable to hold the movieList displayed by the adapter
+    private static ArrayList<Movie> movieList;
+    //member variable for holding viewModel's latest favorites list
+    private static List<Movie> favoritesList;
+
+    //constant for restoring toolbar and movieLIst from onInstanceState
     private static final String MOVIELIST_INSTANCE_KEY = "save_state";
     private static final String TOOLBAR_INSTANCE_KEY = "toolbar_state";
 
-    //Constants for sort option endpoints
-    private static final String BASE_URL = "https://api.themoviedb.org/3/movie/";
+    //Retrofit API instance and Constants for base URL, API key and sort option endpoints
+    private TmdbRetrofitApi tmdbRetrofitApi;
+    private static final String PATH_POPULAR = "popular";
+    private static final String PATH_RATING = "top_rated";
+    private static final String BASE_URL = "https://api.themoviedb.org/3/";
     private static final String API_KEY = BuildConfig.TMDB_API_KEY;
 
     @Override
@@ -102,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
             // Check for internet connection and run retrofit request
             Log.d(LOG_TAG, "No instanceState Saved, run API query");
             if (isNetworkConnected()){
-                getPopularMoviesFromRetrofit();
+                getMoviesWithRetrofit(PATH_POPULAR);
             } else {
                 Log.d(LOG_TAG, "Unable to execute Retrofit Api request due to internet connectivity issues ");
                 showErrorMessage();
@@ -122,17 +126,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
     }
 
-    //Helper code for checking for internet connectivity
+    //Helper method for checking for internet connectivity
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
     }
 
-    //Method for making popular movie API request though Retrofit
-    private void getPopularMoviesFromRetrofit() {
+    //Make TMDB API HTTP request though Retrofit
+    private void getMoviesWithRetrofit(String selection) {
 
-        Call<MovieWrapper> movieRetrofitCall = tmdbRetrofitApi.getPopularMovies(API_KEY);
-        Log.d(LOG_TAG, "Retrofit requesting popular movies.");
+        Call<MovieWrapper> movieRetrofitCall = tmdbRetrofitApi.getMovies(selection, API_KEY);
+        Log.d(LOG_TAG, "Retrofit requesting movies from TMDB.");
         movieRetrofitCall.enqueue(new Callback<MovieWrapper>() {
             @Override
             public void onResponse(Call<MovieWrapper> call, Response<MovieWrapper> response) {
@@ -144,32 +148,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
 
                 showMovieData();
                 movieList = response.body().getMovies();
-                Log.d(LOG_TAG, "Attaching Retrofit movie list to adapter" + movieList);
-                mMovieAdapter.refreshMovieData(movieList);
-            }
-
-            @Override
-            public void onFailure(Call<MovieWrapper> call, Throwable t) {
-                Log.d(LOG_TAG, "Retrofit Api request failed" + t);
-                showErrorMessage();
-            }
-        });
-    }
-
-    private void getTopRatedMoviesFromRetrofit() {
-        Call<MovieWrapper> movieRetrofitCall = tmdbRetrofitApi.getTopRatedMovies(API_KEY);
-        Log.d(LOG_TAG, "Retrofit requesting top rated movies");
-        movieRetrofitCall.enqueue(new Callback<MovieWrapper>() {
-            @Override
-            public void onResponse(Call<MovieWrapper> call, Response<MovieWrapper> response) {
-                if(!response.isSuccessful()){
-                    Log.d(LOG_TAG, "http request was unsuccessful");
-                    showErrorMessage();
-                    return;
-                }
-                showMovieData();
-                movieList = response.body().getMovies();
-                Log.d(LOG_TAG, "Attaching Retrofit movie list to adapter" + movieList);
+                Log.d(LOG_TAG, "Attaching Retrofit movie list to adapter");
                 mMovieAdapter.refreshMovieData(movieList);
             }
 
@@ -192,17 +171,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         int id = item.getItemId();
         switch (id){
             case R.id.menu_sort_popular: {
-                getPopularMoviesFromRetrofit();
+                getMoviesWithRetrofit(PATH_POPULAR);
                 actionBar.setTitle(R.string.toolbar_title_popular_movies);
                 break;
             }
             case R.id.menu_sort_rated: {
-                getTopRatedMoviesFromRetrofit();
+                getMoviesWithRetrofit(PATH_RATING);
                 actionBar.setTitle(R.string.toolbar_title_high_rated_movies);
                 break;
             }
             case R.id.menu_display_favorites: {
-                loadFavoritesFromViewModel();
+                attachFavoritesFromViewModel();
                 actionBar.setTitle(R.string.toolbar_title_my_favorites);
                 break;
             }
@@ -210,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         return super.onOptionsItemSelected(item);
     }
 
-    private void loadFavoritesFromViewModel()  {
+    private void attachFavoritesFromViewModel()  {
         //assign the updated favoritesList to movieList for saving in onInstanceState
         movieList = (ArrayList) favoritesList;
         //Load updated favorites list saved in the viewModel
@@ -238,6 +217,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         startActivity(startDetailActivity);
     }
 
+    //Save the toolbar title and current state of movieList into instanceState bundle
+    //for retrieval after rotation
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         CharSequence toolbarTitleState = actionBar.getTitle();

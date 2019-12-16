@@ -15,7 +15,7 @@
     <string name="sort_by_rating">Sort by rating</string>
     <string name="display_favorites">Display favorites</string>
 
-    <!-- Used in list_item.xml   -->
+    <!-- Used in movie_list_itemt_item.xml   -->
     <string name="main_poster_description">Movie poster image</string>
 
     <!-- Used in activity_detail.xml   -->
@@ -29,9 +29,17 @@
     <string name="detail_release_year_label">Released</string>
     <string name="detail_release_year_tools">2001</string>
     <string name="detail_fav_button_description">Favorites ToggleButton</string>
+    <string name="detail_videos_error_msg">No videos available.</string>
+    <string name="detail_reviews_error_msg">No reviews available.</string>
+
+    <!-- Used in detailed_image_layout   -->
+    <string name="detail_backdrop_description">Movie backdrop image</string>
+    <string name="detail_title_tools">Frozen</string>
+
 
 
     <!--  Used in detailed_review_layout.xml  -->
+    <string name="detailed_activity_title">Movie details</string>
     <string name="review_layout_review_label">Reviews</string>
     <string name="review_layout_review_text_tools">Leaving Terminator: Dark Fate, I never felt like they managed to save the franchise, nor overwhelmingly glad this movie exists.
         Its an adequate addition in a messy franchise that never reaches the heights of the first two films but is just above the three films before it, and because of this a lot of
@@ -41,7 +49,9 @@
     <!-- Used in detailed_videos_layout.xml  -->
     <string name="videos_layout_videos_label">Videos</string>
     <string name="videos_layout_video_link_text_tools">TestLINKTestLINKTestLINKTestLINKTestLINKTestLINK</string>
-
+    <string name="review_author_tools">John Smith</string>
+    <string name="videos_layout_play_trailer_button_txt">Play Trailer</string>
+    <string name="read_more">Read more</string>
 
 
 </resources>
