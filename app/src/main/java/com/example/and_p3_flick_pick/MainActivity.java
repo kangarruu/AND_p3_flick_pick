@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     private TextView mErrorTv;
     private static RecyclerView mMoviesRv;
     private static MovieAdapter mMovieAdapter;
+    private Menu menu;
 
     //Constants for defining number of columns in the layoutManager
     private final static int SPAN_COUNT_PORT = 2;
@@ -53,9 +54,12 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     //member variable for holding viewModel's latest favorites list
     private static List<Movie> favoritesList;
 
-    //constant for restoring toolbar and movieLIst from onInstanceState
-    private static final String MOVIELIST_INSTANCE_KEY = "save_state";
+    //constant for restoring toolbar and the selected menu from onInstanceState
     private static final String TOOLBAR_INSTANCE_KEY = "toolbar_state";
+    private static final String MENU_SELECTED_INSTANCE_KEY = "menu_state";
+    private int menu_selected_int = -1;
+    MenuItem menuItem;
+
 
     //Retrofit API instance and Constants for base URL, API key and sort option endpoints
     private TmdbRetrofitApi tmdbRetrofitApi;
@@ -101,8 +105,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         if (savedInstanceState != null) {
             Log.d(LOG_TAG, "Getting savedInstanceState");
             actionBar.setTitle(savedInstanceState.getCharSequence(TOOLBAR_INSTANCE_KEY));
-            movieList= savedInstanceState.getParcelableArrayList(MOVIELIST_INSTANCE_KEY);
-            mMovieAdapter.refreshMovieData(movieList);
+            menu_selected_int = savedInstanceState.getInt(MENU_SELECTED_INSTANCE_KEY);
         } else {
             // Check for internet connection and run retrofit request
             Log.d(LOG_TAG, "No instanceState Saved, run API query");
@@ -164,6 +167,26 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
+        this.menu = menu;
+        if (menu_selected_int == -1){
+            return true;
+        }
+        switch (menu_selected_int) {
+            case R.id.menu_sort_popular:
+                menuItem = (MenuItem) menu.findItem(R.id.menu_sort_popular);
+                onOptionsItemSelected(menuItem);
+                break;
+
+            case R.id.menu_sort_rated:
+                menuItem = (MenuItem) menu.findItem(R.id.menu_sort_rated);
+                onOptionsItemSelected(menuItem);
+                break;
+
+            case R.id.menu_display_favorites:
+                menuItem = (MenuItem) menu.findItem(R.id.menu_display_favorites);
+                onOptionsItemSelected(menuItem);
+                break;
+        }
         return true;
     }
 
@@ -173,15 +196,18 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
         switch (id){
             case R.id.menu_sort_popular: {
                 getMoviesWithRetrofit(PATH_POPULAR);
+                menu_selected_int = id;
                 actionBar.setTitle(R.string.toolbar_title_popular_movies);
                 break;
             }
             case R.id.menu_sort_rated: {
                 getMoviesWithRetrofit(PATH_RATING);
+                menu_selected_int = id;
                 actionBar.setTitle(R.string.toolbar_title_high_rated_movies);
                 break;
             }
             case R.id.menu_display_favorites: {
+                menu_selected_int = id;
                 attachFavoritesFromViewModel();
                 actionBar.setTitle(R.string.toolbar_title_my_favorites);
                 break;
@@ -191,11 +217,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     }
 
     private void attachFavoritesFromViewModel()  {
-        //assign the updated favoritesList to movieList for saving in onInstanceState
-        movieList = (ArrayList) favoritesList;
         //Load updated favorites list saved in the viewModel
         Log.d(LOG_TAG, "Attaching ViewModel list to adapter. " + movieList);
-        mMovieAdapter.refreshMovieData(movieList);
+        mMovieAdapter.refreshMovieData(favoritesList);
     }
 
     //helper methods to show/hide the loading indicator and error textView
@@ -224,7 +248,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapter.Movi
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         CharSequence toolbarTitleState = actionBar.getTitle();
         super.onSaveInstanceState(outState);
-        outState.putParcelableArrayList(MOVIELIST_INSTANCE_KEY, movieList);
+//        outState.putParcelableArrayList(MOVIELIST_INSTANCE_KEY, movieList);
+        outState.putInt(MENU_SELECTED_INSTANCE_KEY, menu_selected_int);
         outState.putCharSequence(TOOLBAR_INSTANCE_KEY, toolbarTitleState);
     }
 
